@@ -1,38 +1,35 @@
-import os
 import sys
-from atexit import register
-from io import BytesIO
-sys.stdin = BytesIO(os.read(0, os.fstat(0).st_size))
-sys.stdout = BytesIO()
-register(lambda: os.write(1, sys.stdout.getvalue()))
-input = lambda: sys.stdin.readline().rstrip('\r\n')
+import collections
 
-
-numtests = int(input())
-
-all = []
+numtests = int(sys.stdin.readline())
+lines = []
 for j in range(numtests):
-    line = list(input())
+    lines.append(sys.stdin.readline())
+
+
+for j in range(numtests):
+    line = lines[j]
     position = 0
-    final = []
+    final = collections.deque()
+    final.append([])
+    empty = True
     for i in range(len(line)):
         if(line[i] == '<'):
-            if(position != 0):
-                del final[position-1]
-                position -= 1
+            if(position > -1 and not empty and len(final[position]) > 0):
+                final[position].pop()
         elif(line[i] == "]"):
-            position = len(final)
+            position = len(final)-1
         elif(line[i] == "["):
-            position = 0
-        else:
-            if(position >= len(final)):
-                final.append(line[i])
+            position = -1
+        elif(line[i] != "\n"):
+            if(position == -1):
+                final.appendleft([line[i]])
+                position = 0
+                empty = False
             else:
-                final.insert(position, line[i])
-            position += 1
-
-
-    all.append("".join(final))
-
-for j in range(numtests):
-    print(all[j])
+                final[position].append(line[i])
+                empty = False
+    for i in final:
+        for j in i:
+            sys.stdout.write(j)
+    sys.stdout.write("\n")
