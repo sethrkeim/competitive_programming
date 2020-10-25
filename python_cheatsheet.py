@@ -1,6 +1,6 @@
 # Python
 
-# input 
+# input
 s = input()
 #type conversion
 int(s)
@@ -34,3 +34,9 @@ d.appendleft(first)
 d.pop()
 #pop from front
 d.popleft()
+
+
+# Priority Queue
+p = queue.PriorityQueue()
+p.put(4, "hi")
+item = p.get()
